@@ -1,0 +1,22 @@
+{
+  "name": "OctoBot",
+  "version": "1.0.0",
+  "description": "A quick and easy bot for discord, written in node.js",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devinhaber/OctoBot.git"
+  },
+  "dependencies": {
+    "discord.js": "8.0.0",
+    "moment": "2.14.1",
+    "node-schedule": "1.1.1",
+    "orm": "3.1.0",
+    "sqlite3": "2.1.7"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devinhaber/OctoBot/issues"
+  },
+  "homepage": "https://github.com/devinhaber/OctoBot#readme"
+}
