@@ -36,7 +36,14 @@ function executeMessage(cmd) {
         if (bot.voiceConnection) {
             bot.voiceConnection.destroy();
         }
-    } 
+    } else if (cmd.content.substring(0,9) == "!register") {
+        if (config.DEV == true) {
+            bot.sendMessage(cmd, "WARNING: Bot is currently in a dev environment - any DB changes will not be carried to production", (err) => {});
+        }
+        if (cmd.content.substring(10,14) == "user") {
+            registerUser(cmd);
+        }
+    }
 }
 function processMessage(msg) {
     if (msg.content.substring(0,1) == '!') {
@@ -51,8 +58,32 @@ function processMessage(msg) {
          
     }
 }
+
 bot.on("message", msg => {
     processMessage(msg);})
+
+function registerUser(creator) {
+    userInfo = {}
+    bot.awaitResponse(creator, "Welcome to user registration. Please enter all info except for names in lower case. First, enter a character name", (err,msg) => {
+        userInfo.name = msg.content
+        bot.awaitResponse(creator, "Enter the following info, seperated by spaces. Values requiring spaces should use underscores: Realm, Faction, Class, Race, Role", (err, msg) => {
+            info = msg.content.split(" ")
+            userInfo.realm = info[0]
+            userInfo.faction = info[1]
+            userInfo.class = info[2]
+            userInfo.race = info[3]
+            userInfo.role = info[4]
+            console.log(userInfo)
+            dbmanage.registerRaider(userInfo, (err) => {
+                if (err) {console.log(err)
+                }
+                else {
+                    bot.sendMessage(creator, "Registration complete!");
+                }
+            });
+        });
+    });
+}
 
 bot.on("ready", () => {
     //Update for funny game message

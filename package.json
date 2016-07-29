@@ -12,7 +12,7 @@
     "moment": "2.14.1",
     "node-schedule": "1.1.1",
     "orm": "3.1.0",
-    "sqlite3": "2.1.7"
+    "mysql": "2.0.0-alpha9"
   },
   "license": "ISC",
   "bugs": {

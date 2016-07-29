@@ -39,4 +39,7 @@ exports.setSchema = (orm, db) => {
     tables['Schedule'] = Schedule;
 }
 
-exports.tables = tables
+exports.registerRaider = (userinfo, cb) => {
+    console.log("Registering User")
+    tables['raider'].create(userinfo, (err) => {cb(err)});
+}
