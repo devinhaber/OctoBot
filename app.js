@@ -12,6 +12,7 @@ var app = express()
 
 app.set('views', './views');
 app.set('view engine', 'mustache');
+
 var users = {}
 
 function playFile(channel, filename) {
