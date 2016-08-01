@@ -12,7 +12,8 @@
     "moment": "2.14.1",
     "node-schedule": "1.1.1",
     "orm": "3.1.0",
-    "mysql": "2.0.0-alpha9"
+    "mysql": "2.0.0-alpha9",
+    "express": "4.14.0"
   },
   "license": "ISC",
   "bugs": {

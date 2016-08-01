@@ -5,6 +5,9 @@ var dbmanage = require('./dbmanage.js')
 
 var bot = new Discord.Client({autoReconnect: true});
 
+var express = require('express')
+var app = express()
+
 var users = {}
 
 function playFile(channel, filename) {
@@ -31,6 +34,7 @@ function executeMessage(cmd) {
     if (cmd.content == '!help') {
         bot.sendMessage(cmd, config.helpMessage, (err, msg) => {return;});
     } else if (cmd.content.substring(0,5) == "!play") {
+        console.log(cmd.author + "playing sound" + cmd.content.substring(6));
         playFile(cmd.author.voiceChannel, cmd.content.substring(6));
     } else if (cmd.content == '!stop') {
         if (bot.voiceConnection) {
@@ -92,5 +96,10 @@ bot.on("serverNewMember", (server, user) => {
     }
 })
 
+app.get('/', (req, res) => {
+    res.send('GET /');
+})
+
+app.listen(80);
 
 bot.loginWithToken(config.token)
