@@ -14,7 +14,8 @@
     "orm": "3.1.0",
     "mysql": "2.0.0-alpha9",
     "express": "4.14.0",
-    "diskusage": "0.1.5"
+    "diskusage": "0.1.5",
+    "mustache": "2.2.1"
   },
   "license": "ISC",
   "bugs": {
