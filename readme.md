@@ -25,6 +25,7 @@ The bot currently reads settings from a file called `config.json`. You should in
 "playingGame": The display name for the Discord "currently playing".
 "DEV": (Unused) true or false, depending whether the bot is in development mode. 
 "DBConnection": DB Url for Node ORM. See below
+```
 
 # Using other databases
 
