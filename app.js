@@ -118,7 +118,7 @@ app.get('/', (req, res) => {
             console.log(err);
             res.render('index', {"free": "ERR", "remaining": "ERR"});
         } else {
-            res.render('index', {"free": info.free / 1000, "remaining": info.remaining / 1000});
+            res.render('index', {"free": info.free / 1000000, "total": info.total / 1000000});
         }
     })
 })
