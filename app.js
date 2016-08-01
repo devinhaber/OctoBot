@@ -1,9 +1,11 @@
 var Discord = require('discord.js');
 var config = require('./config.json');
 var orm = require('orm');
-var dbmanage = require('./dbmanage.js')
+var dbmanage = require('./dbmanage.js');
 
 var bot = new Discord.Client({autoReconnect: true});
+
+var disk = require('diskusage');
 
 var express = require('express')
 var app = express()
@@ -40,6 +42,14 @@ function executeMessage(cmd) {
         if (bot.voiceConnection) {
             bot.voiceConnection.destroy();
         }
+    } else if (cmd.content == '!remaining') {
+        // Probably won't work on windows. Whatever
+        disk.check('/', (err, info) => {
+            if (err) {console.log(err);}
+            else {
+                bot.sendMessage(info.free + ' space free out of ' + info.total + ' total.', (err, msg) => {});
+            }
+        })
     }
 }
 function processMessage(msg) {
