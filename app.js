@@ -47,7 +47,7 @@ function executeMessage(cmd) {
         disk.check('/', (err, info) => {
             if (err) {console.log(err);}
             else {
-                bot.sendMessage(info.free + ' space free out of ' + info.total + ' total.', (err, msg) => {});
+                bot.sendMessage(cmd, info.free + ' space free out of ' + info.total + ' total.', (err, msg) => {});
             }
         })
     }
