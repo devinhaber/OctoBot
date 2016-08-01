@@ -15,7 +15,8 @@
     "mysql": "2.0.0-alpha9",
     "express": "4.14.0",
     "diskusage": "0.1.5",
-    "mustache": "2.2.1"
+    "mustache": "2.2.1",
+    "mustache-express": "1.2.2"
   },
   "license": "ISC",
   "bugs": {

@@ -10,7 +10,10 @@ var disk = require('diskusage');
 var express = require('express')
 var app = express()
 
-app.set('views', './views');
+var mustacheExpress = require('mustache-express')
+app.engine('mustache', mustacheExpress());
+
+app.set('views', __dirname + '/views');
 app.set('view engine', 'mustache');
 
 var users = {}
@@ -113,9 +116,9 @@ app.get('/', (req, res) => {
     disk.check('/', (err, info) => {
         if (err) {
             console.log(err);
-            res.render(index, {"free": "ERR", "remaining": "ERR"});
+            res.render('index', {"free": "ERR", "remaining": "ERR"});
         } else {
-            res.render(index, {"free": info.free / 1000, "remaining": info.remaining / 1000});
+            res.render('index', {"free": info.free / 1000, "remaining": info.remaining / 1000});
         }
     })
 })
