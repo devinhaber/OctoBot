@@ -2,6 +2,7 @@ var Discord = require('discord.js');
 var config = require('./config.json');
 var orm = require('orm');
 var dbmanage = require('./dbmanage.js');
+var bodyParser = require('body-parser');
 
 var bot = new Discord.Client({autoReconnect: true});
 
@@ -13,6 +14,8 @@ var app = express()
 var mustacheExpress = require('mustache-express')
 app.engine('mustache', mustacheExpress());
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'mustache');
 
@@ -119,6 +122,16 @@ app.get('/', (req, res) => {
             res.render('index', {"free": "ERR", "remaining": "ERR"});
         } else {
             res.render('index', {"free": info.free / 1000000, "total": info.total / 1000000});
+        }
+    })
+})
+
+app.post('/', (req, res) => {
+    dbmanage.checkAuth(req, (val) => {
+        if (val == true) {
+            res.send('Accepted')
+        } else {
+            res.status(403).end();
         }
     })
 })

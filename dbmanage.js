@@ -33,13 +33,38 @@ exports.setSchema = (orm, db) => {
     });
     Raid.hasMany('raiders', Raider, {}, {reverse: 'raids', key:true});
     Raid.hasOne('schedule', Schedule, {reverse: 'raid'});
+
+    var User = db.define('user', {
+        username: {type: 'text'},
+        password: {type: 'text'}
+    });
+
     db.sync((err) => {if (err) throw err;});
     tables['raid'] = Raid;
     tables['raider'] = Raider;
-    tables['Schedule'] = Schedule;
+    tables['schedule'] = Schedule;
+    tables['user'] = User;
+    console.log('DB READY')
 }
 
 exports.registerRaider = (userinfo, cb) => {
     console.log("Registering User")
     tables['raider'].create(userinfo, (err) => {cb(err)});
+}
+
+// Plaintext passwords :( Not overly important for such a small project - put a warning for users
+exports.checkAuth = (req, cb) => {
+    tables['user'].one({username: req.body.username},  (err, res) => {
+        if (req.body.password == res.password) {
+            cb(true)
+        } else {
+            cb(false)
+        }
+    })
+}
+
+exports.registerUser = (username, password, cb) => {
+    tables['user'].create({username: username, password: password}, (err) => {
+            cb(err)
+    })
 }
