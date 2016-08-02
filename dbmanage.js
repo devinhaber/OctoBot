@@ -55,7 +55,7 @@ exports.registerRaider = (userinfo, cb) => {
 // Plaintext passwords :( Not overly important for such a small project - put a warning for users
 exports.checkAuth = (req, cb) => {
     tables['user'].one({username: req.body.username},  (err, res) => {
-        if (req.body.password == res.password) {
+        if (res && req.body.password == res.password) {
             cb(true)
         } else {
             cb(false)
