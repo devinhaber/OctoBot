@@ -65,9 +65,13 @@ app.post('/', (req, res) => {
             req.session.authed = true;
             disk.check('/', (err, info) => {
                 if (err) {
-                    res.render('main', {"free": "ERR", "total": "ERR"})
+                    res.render('main', {"free": "ERR", "total": "ERR", "pctFree": "ERR"})
                 } else {
-                    res.render('main', {"free": info.free / 1000000, "total": info.total / 1000000})
+                    res.render('main', {
+                        "free": (info.free / 1000000).toFixed(1),
+                        "total": (info.total / 1000000).toFixed(1),
+                        "pctFree": 100 - ((info.free / 1000000) / (info.total / 1000000).toFixed()
+                    })
                 }
             })
         } else {
