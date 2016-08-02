@@ -1,6 +1,6 @@
 # OctoBot
 
-A quick discord bot written in node. 
+A quick discord bot written in node. Comes with a control panel written using express.
 
 # Features
 
@@ -15,6 +15,10 @@ Most requirements can be installed via `npm install`.
 In particular, [Discord.js](http://discordjs.readthedocs.io/en/latest/installing.html) will require Python 2.7 and on Windows, Visual Studio.
 You will also have to install [FFMPEG](https://ffmpeg.org/download.html) and some form of relational DB.
 
+# Running
+
+Simply use `node octobot` to run the bot. To only run the bot portion and not the control panel website, use `node app` instead.
+
 # Configuration
 
 The bot currently reads settings from a file called `config.json`. You should include this file in the same directory as the bot. `config.json` requires the following properties:
@@ -25,6 +29,7 @@ The bot currently reads settings from a file called `config.json`. You should in
 "playingGame": The display name for the Discord "currently playing".
 "DEV": (Unused) true or false, depending whether the bot is in development mode. 
 "DBConnection": DB Url for Node ORM. See below
+"sesssionSecret": Secret key used by express-session to sign session cookies 
 ```
 
 # Using other databases

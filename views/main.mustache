@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<head>
+<title> Main Page </title>
+</head>
+
+<body>
+<h1> Welcome to the OctoBot Control Panel! </h1>
+
+<div>
+<h3> Usage </h3>
+{{free}} MB available out of {{total}} MB used
+</div>
+
+<div>
+<h2> Upload a sound </h2>
+<b> Sounds are current only accepted in mp3 format - soon to change! </b> <br>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    Select sound to upload
+    <input type="file" name="sound">
+    <input type="submit" value="Upload Image" name="submit">
+</form>
+</body>

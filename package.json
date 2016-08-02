@@ -2,21 +2,24 @@
   "name": "OctoBot",
   "version": "1.0.0",
   "description": "A quick and easy bot for discord, written in node.js",
-  "main": "app.js",
+  "main": "octobot.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/devinhaber/OctoBot.git"
   },
   "dependencies": {
+    "body-parser": "1.15.2",
     "discord.js": "8.0.0",
-    "moment": "2.14.1",
-    "node-schedule": "1.1.1",
-    "orm": "3.1.0",
-    "mysql": "2.0.0-alpha9",
-    "express": "4.14.0",
     "diskusage": "0.1.5",
+    "express": "4.14.0",
+    "express-session": "^1.14.0",
+    "moment": "2.14.1",
+    "multer": "^1.1.0",
     "mustache": "2.2.1",
-    "mustache-express": "1.2.2"
+    "mustache-express": "1.2.2",
+    "mysql": "2.0.0-alpha9",
+    "node-schedule": "1.1.1",
+    "orm": "3.1.0"
   },
   "license": "ISC",
   "bugs": {
