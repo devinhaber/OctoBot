@@ -48,13 +48,17 @@ app.get('/', (req, res) => {
     disk.check('/', (err, info) => {
         if (err) {
             console.log(err);
-            res.render('index');
+            res.render('main', {"free": "ERR", "total": "ERR", "pctFree": "ERR"})
         } else {
             // Poor auth happening here - not a priority for this small, personal use project
             if (req.session.authed == true) {
-                res.render('main', {"free": info.free / 1000000, "total": info.total / 1000000});
+                res.render('main', {
+                        "free": (info.free / 1000000).toFixed(1),
+                        "total": (info.total / 1000000).toFixed(1),
+                        "pctFree": (((info.free) / (info.total)) * 100).toFixed()
+                    })
             } else {
-            res.render('index');
+                res.render('index');
         }}
     })
 })
