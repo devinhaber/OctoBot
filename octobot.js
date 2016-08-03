@@ -59,17 +59,29 @@ app.get('/', (req, res) => {
     })
 })
 
+app.get('/logout', (req,res) => {
+    if (req.session && req.session.authed == true) {
+        bot.logout();
+        res.redirect('/')
+    } else {
+        res.render('index')
+    }
+})
+
+app.get('/login', (req,res) => {
+    if (req.session && req.session.authed == true) {
+        bot.login();
+        res.redirect('/')
+    } else {
+        res.render('index')
+    }
+})
+
 app.post('/', (req, res) => {
     dbmanage.checkAuth(req, (val) => {
         if (val == true) {
             req.session.authed = true;
-            disk.check('/', (err, info) => {
-                if (err) {
-                    res.render('main', {"free": "ERR", "total": "ERR"})
-                } else {
-                    res.render('main', {"free": info.free / 1000000, "total": info.total / 1000000})
-                }
-            })
+            res.redirect('/')
         } else {
             req.session.authed = false;
             res.render('index')

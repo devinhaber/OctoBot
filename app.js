@@ -104,3 +104,13 @@ bot.on("serverNewMember", (server, user) => {
 })
 
 bot.loginWithToken(config.token)
+
+exports.logout = () => {
+    bot.logout((err) => {
+        if (err) console.log(err);
+    })
+}
+
+exports.login = () => {
+    bot.loginWithToken(config.token)
+}
