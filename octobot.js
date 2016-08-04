@@ -17,12 +17,15 @@ var storage = multer.diskStorage({
   }
 })
 
+//This should cover any browser diffs with mp3 files
+mimetypes = ['audio/mp3', 'audio/mpeg', 'audio/x-mpeg-3', 'video/mpeg', 'video/x-mpeg' ]
 function filtertype(req, file, cb) {
-    if (file.mimetype == 'audio/mp3') {
-        cb(null, true)
-    } else {
-        cb(null, false)
+    for (i in mimetypes) {
+        if (file.mimetype == mimetypes[i]) {
+            cb(null, true)
+        }
     }
+    cb(null, false)
 }
 
 var limits = {fileSize: maxFileSize}
