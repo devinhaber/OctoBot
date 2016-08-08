@@ -2,6 +2,8 @@ var Discord = require('discord.js');
 var config = require('./config.json');
 var orm = require('orm');
 var dbmanage = require('./dbmanage.js');
+var ytdl = require('ytdl-core');
+var fs = require('fs')
 
 var bot = new Discord.Client({autoReconnect: true});
 
@@ -47,6 +49,16 @@ function executeMessage(cmd) {
                 bot.sendMessage(cmd, info.free + ' space free out of ' + info.total + ' total.', (err, msg) => {});
             }
         })
+    } else if (cmd.content.substring(0,8) == '!youtube') {
+        bot.joinVoiceChannel(cmd.author.voiceChannel, (err,connection) => {
+            if (err) {console.log(err)};
+            ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3'))
+            .on('finish', () => {
+                connection.playFile('./sounds/temp.mp3', {}, (err, intent) => {
+                    intent.on('end', () => {connection.destroy()});
+                })
+            })
+            })
     }
 }
 function processMessage(msg) {
