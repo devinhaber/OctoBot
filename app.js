@@ -54,7 +54,7 @@ function executeMessage(cmd) {
             if (err) {console.log(err)};
             ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3'))
             .on('finish', () => {
-                connection.playFile('./sounds/temp.mp3', {}, (err, intent) => {
+                connection.playFile('./sounds/temp.mp3', {'volume': config.volume}, (err, intent) => {
                     intent.on('end', () => {connection.destroy()});
                 })
             })
