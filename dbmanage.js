@@ -6,11 +6,12 @@ var classes = ['warrior', 'paladin', 'hunter', 'rogue', 'priest', 'death_knight'
                'mage', 'warlock', 'monk', 'demon_hunter', 'druid']
 var roles = ['dps', 'tank', 'healer']
 
-var professions = ['engineering', 'tailoring', 'alchemy', 'blacksmithing', 'enchanting', 'herbalism', 'inscription', 'jewelcrafting', 'leatherworking', 'mining', 'skinning']
+var professions = ['engineering', 'tailoring', 'alchemy', 'blacksmithing', 'enchanting', 'herbalism', 'inscription', 'jewelcrafting', 'leatherworking', 'mining', 'skinning', 'none']
 
 exports.setSchema = (orm, db) => {
     var Raider = db.define('raider', {
         id:   {type:'serial', key:true},
+        discorduser: {type: 'text'},
         realname:    {type: 'text'},
         name:       {type: 'text'},
         realm:      {type: 'text'},
@@ -39,17 +40,11 @@ exports.setSchema = (orm, db) => {
         password: {type: 'text'}
     });
 
-    db.sync((err) => {if (err) throw err;});
+    db.sync((err) => {if (err) throw err;console.log('DB READY')});
     tables['raid'] = Raid;
     tables['raider'] = Raider;
     tables['schedule'] = Schedule;
     tables['user'] = User;
-    console.log('DB READY')
-}
-
-exports.registerRaider = (userinfo, cb) => {
-    console.log("Registering User")
-    tables['raider'].create(userinfo, (err) => {cb(err)});
 }
 
 // Plaintext passwords :( Not overly important for such a small project - put a warning for users
@@ -66,5 +61,25 @@ exports.checkAuth = (req, cb) => {
 exports.registerUser = (username, password, cb) => {
     tables['user'].create({username: username, password: password}, (err) => {
             cb(err)
+    })
+}
+
+exports.registerRaider = (req, cb) => {
+    tables['raider'].create(req.body, (err) => {
+        cb(err)
+    })
+}
+
+exports.getRaiders = (cb) => {
+    tables['raider'].all(cb)
+}
+
+exports.findRaider = (name ,cb) => {
+    tables['raider'].one({name: name}, (err, res) => {
+        if (res) {
+            cb(null, res)
+        } else {
+            cb(err, null)
+        }
     })
 }

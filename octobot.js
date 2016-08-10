@@ -84,6 +84,50 @@ app.get('/login', (req,res) => {
     }
 })
 
+app.get('/raiders', (req,res) => {
+    dbmanage.getRaiders((err, users) => {
+        if (err) {
+            console.log(err);
+            res.redirect('/')
+        } else {
+            res.render('users', {"users": users})
+        }
+    })
+})
+
+app.get('/registerraider', (req,res) => {
+    if (req.session && req.session.authed == true) {
+        res.render('register')
+    } else {
+        res.redirect('/')
+    }
+})
+
+app.get('/raider/:name', (req,res) => {
+    if (req.session && req.session.authed == true) {
+        name = req.params.name;
+        dbmanage.findRaider(name, (err, user) => {
+            if (err) {console.log(err)};
+            if (!user) {res.status(404).end()}
+            else {
+            res.render('user', user)
+        }})
+    } else {
+        res.redirect('/')
+    }
+})
+
+app.post('/registerraider', (req,res) => {
+    if (req.session && req.session.authed == true) {
+        dbmanage.registerRaider(req, (err) => {
+            if (err) {console.log(err)};
+            res.redirect('/')
+        })
+    } else {
+        res.redirect('/')
+    }
+})
+
 app.post('/', (req, res) => {
     dbmanage.checkAuth(req, (val) => {
         if (val == true) {

@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<head>
+<title> User Registration </title>
+</head>
+
+<body>
+<h1> Raiders </h1>
+{{#users}}
+<form action="/raider/{{name}}" method="get">
+    <input type="submit" value={{name}}>
+</form> 
+{{/users}}
+</body>
