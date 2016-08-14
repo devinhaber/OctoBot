@@ -1,13 +1,14 @@
 <!DOCTYPE HTML>
 <head>
-<title> User Registration </title>
+<title> Raid Info </title>
 </head>
 
 <body>
-<h1> Raiders </h1>
-{{#users}}
+<h1> {{name}} </h1>
+Raid: {{raid}}<br>
+Raiders: {{#raiders}}
 <form action="/raider/{{name}}" method="get">
     <input type="submit" value={{name}}>
 </form> 
-{{/users}}
+{{/raiders}}
 </body>

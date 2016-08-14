@@ -70,8 +70,28 @@ exports.registerRaider = (req, cb) => {
     })
 }
 
+exports.registerRaid = (req, cb) => {
+    tables['raid'].create(req.body, (err) => {
+        cb(err)
+    })
+}
+
 exports.getRaiders = (cb) => {
     tables['raider'].all(cb)
+}
+
+exports.getRaids = (cb) => {
+    tables['raid'].all(cb)
+}
+
+exports.findRaid = (name, cb) => {
+    tables['raid'].one({name: name}, (err, res) => {
+        if (res) {
+            cb(null, res)
+        } else {
+            cb(err, null)
+        }
+    })
 }
 
 exports.findRaider = (name ,cb) => {

@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<head>
+<title> Raid List </title>
+</head>
+
+<body>
+<h1> Raids </h1>
+{{#raids}}
+<form action="/raid/{{name}}" method="get">
+    <input type="submit" value={{name}}>
+</form> 
+{{/raids}}
+</body>

@@ -59,6 +59,12 @@ function executeMessage(cmd) {
                 })
             })
             })
+    } else if (cmd.content == '!sounds') {
+        fs.readdir('./sounds', (err, files) => {
+            if (err) {console.log(err)} else {
+                bot.sendMessage(cmd, files.toString(), (err, msg) => {return;});
+            }
+        })
     }
 }
 function processMessage(msg) {

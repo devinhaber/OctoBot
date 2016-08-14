@@ -85,19 +85,44 @@ app.get('/login', (req,res) => {
 })
 
 app.get('/raiders', (req,res) => {
-    dbmanage.getRaiders((err, users) => {
+    if (!req.session || req.session.authed == false) {
+        res.redirect('/')
+    } else {
+    dbmanage.getRaiders((err, raiders) => {
         if (err) {
             console.log(err);
             res.redirect('/')
         } else {
-            res.render('users', {"users": users})
+            res.render('raiders', {"raiders": raiders})
         }
-    })
+    })}
+})
+
+app.get('/raids', (req, res) => {
+    if (!req.session || req.session.authed == false) {
+        res.redirect('/')
+    } else {
+    dbmanage.getRaids((err, raids) => {
+        if (err) {
+            console.log(err);
+            res.redirect('/')
+        } else {
+            res.render('raids', {"raids": raids})
+        }
+    })}
 })
 
 app.get('/registerraider', (req,res) => {
     if (req.session && req.session.authed == true) {
         res.render('register')
+    } else {
+        res.redirect('/')
+    }
+})
+
+app.get('/registerraid', (req,res) => {
+    if (req.session && req.session.authed == true) {
+        res.render('registerraid')
     } else {
         res.redirect('/')
     }
@@ -117,11 +142,42 @@ app.get('/raider/:name', (req,res) => {
     }
 })
 
+app.get('/raid/:name', (req, res) => {
+    if (req.session && req.session.authed == true) {
+        name = req.params.name;
+        dbmanage.findRaid(name, (err, raid) => {
+            if (err) {console.log(err)};
+            if (!raid) {res.status(404).end()}
+            else {
+                raid.getRaiders((err, raiders) => {
+                    raid['raiders'] = raiders;
+                    if (err) {
+                        console.log(err);
+                        res.render('/')
+                    } else {
+                        res.render('raid', raid)
+                    }})
+            }
+        })
+    }
+})
+
 app.post('/registerraider', (req,res) => {
     if (req.session && req.session.authed == true) {
         dbmanage.registerRaider(req, (err) => {
             if (err) {console.log(err)};
-            res.redirect('/')
+            res.redirect('/raiders')
+        })
+    } else {
+        res.redirect('/')
+    }
+})
+
+app.post('/registerraid', (req,res) => {
+    if (req.session && req.session.authed == true) {
+        dbmanage.registerRaid(req, (err) => {
+            if (err) {console.log(err)};
+            res.redirect('/raids')
         })
     } else {
         res.redirect('/')

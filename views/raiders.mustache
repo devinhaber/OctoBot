@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<head>
+<title> Raider List </title>
+</head>
+
+<body>
+<h1> Raiders </h1>
+{{#raiders}}
+<form action="/raider/{{name}}" method="get">
+    <input type="submit" value={{name}}>
+</form> 
+{{/raiders}}
+</body>
