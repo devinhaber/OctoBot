@@ -67,6 +67,14 @@ function executeMessage(cmd) {
         })
     }
 }
+function buzzwordDetector(msg) {
+    var fuck = "";
+    if(msg.content.contains("fun"))
+	fuck = "fun";
+    if(fuck != "")
+	bot.sendMessage(cmd, ">" + fuck, (err, msg) => {return;});
+
+}
 function processMessage(msg) {
     if (msg.content.substring(0,1) == '!') {
         //for (user in config.authorizedUsers) {
@@ -79,6 +87,7 @@ function processMessage(msg) {
         //}
          
     }
+    buzzwordDetector(msg);
 }
 
 bot.on("message", msg => {
