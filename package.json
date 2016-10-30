@@ -7,9 +7,16 @@
     "type": "git",
     "url": "git+https://github.com/devinhaber/OctoBot.git"
   },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devinhaber/OctoBot/issues"
+  },
+  "homepage": "https://github.com/devinhaber/OctoBot#readme",
   "dependencies": {
+    "discord.js": "^10.0.1",
+    "node-opus": "^0.2.2",
+    "opusscript": "0.0.1",
     "body-parser": "1.15.2",
-    "discord.js": "8.0.0",
     "diskusage": "0.1.5",
     "express": "4.14.0",
     "express-session": "^1.14.0",
@@ -21,10 +28,5 @@
     "node-schedule": "1.1.1",
     "orm": "3.1.0",
     "ytdl-core": "^0.7.17"
-  },
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/devinhaber/OctoBot/issues"
-  },
-  "homepage": "https://github.com/devinhaber/OctoBot#readme"
+  }
 }

@@ -5,7 +5,7 @@ var dbmanage = require('./dbmanage.js');
 var ytdl = require('ytdl-core');
 var fs = require('fs')
 
-var bot = new Discord.Client({autoReconnect: true});
+var bot = new Discord.Client();
 
 var disk = require('diskusage');
 
@@ -15,66 +15,55 @@ function playFile(channel, filename) {
     if (channel == null || filename == '') {
         return;
     } else {
-        bot.joinVoiceChannel(channel, (err, connection) => {
+        channel.join(channel).then((connection) => {
             console.log('joining channel ' + channel.name)
-            path = './sounds/' + filename + '.mp3' //More file formats coming in the future!
-            options = 
+            const path = './sounds/' + filename + '.mp3' //More file formats coming in the future!
+            const options = 
             {
                 'volume': config.volume
             }
-            connection.playFile(path, options, (err, intent) => {
-                intent.on('end', () => {connection.destroy()});
-                if (err) {
-                    console.log(err)
-                }
-            })
+            const dispatcher = connection.playFile(path, options);
+            dispatcher.on('end', () => {connection.disconnect()});
         })
     }
 }
+
 function executeMessage(cmd) {
     if (cmd.content == '!help') {
-        bot.sendMessage(cmd, config.helpMessage, (err, msg) => {return;});
+        cmd.channel.sendMessage(config.helpMessage);
     } else if (cmd.content.substring(0,5) == "!play") {
         console.log(cmd.author + "playing sound" + cmd.content.substring(6));
-        playFile(cmd.author.voiceChannel, cmd.content.substring(6));
+        cmd.guild.fetchMember(cmd.author).then((member) => {
+            playFile(member.voiceChannel, cmd.content.substring(6));
+        })
     } else if (cmd.content == '!stop') {
-        if (bot.voiceConnection) {
-            bot.voiceConnection.destroy();
-        }
+        bot.voiceConnections[cmd.guild.id].disconnect();
     } else if (cmd.content == '!remaining') {
         // Probably won't work on windows. Whatever
         disk.check('/', (err, info) => {
             if (err) {console.log(err);}
             else {
-                bot.sendMessage(cmd, info.free + ' space free out of ' + info.total + ' total.', (err, msg) => {});
+                cmd.channel.sendMessage(info.free + ' space free out of ' + info.total + ' total.');
             }
         })
     } else if (cmd.content.substring(0,8) == '!youtube') {
-        bot.joinVoiceChannel(cmd.author.voiceChannel, (err,connection) => {
-            if (err) {console.log(err)};
-            ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3'))
-            .on('finish', () => {
-                connection.playFile('./sounds/temp.mp3', {'volume': config.volume}, (err, intent) => {
-                    intent.on('end', () => {connection.destroy()});
-                })
-            })
-            })
+        cmd.guild.fetchMember(cmd.author).then((member) => {
+            member.voiceChannel.join(cmd.author.voiceChannel).then((connection) => {
+                ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3')).on('finish', () => {
+                    dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume});
+                    dispatcher.on('end', () => {connection.disconnect()});
+                });
+            });
+        });
     } else if (cmd.content == '!sounds') {
         fs.readdir('./sounds', (err, files) => {
             if (err) {console.log(err)} else {
-                bot.sendMessage(cmd, files.toString(), (err, msg) => {return;});
+                cmd.guild.sendMessage(cmd, files.toString(), (err, msg) => {return;});
             }
         })
     }
 }
-function buzzwordDetector(msg) {
-    var fuck = "";
-    if(msg.content.contains("fun"))
-	fuck = "fun";
-    if(fuck != "")
-	bot.sendMessage(cmd, ">" + fuck, (err, msg) => {return;});
 
-}
 function processMessage(msg) {
     if (msg.content.substring(0,1) == '!') {
         //for (user in config.authorizedUsers) {
@@ -87,57 +76,56 @@ function processMessage(msg) {
         //}
          
     }
-    buzzwordDetector(msg);
 }
 
 bot.on("message", msg => {
-    processMessage(msg);})
+    processMessage(msg);
+})
 
 bot.on("ready", () => {
     //Update for funny game message
-    bot.setPlayingGame(config.playingGame, (err) => {if (err) {console.log(err);}})
+    //TODO: do that
     //On joining, store everyones roles for usage
-    for (i=0;i<bot.servers.length;i++) {
-        server = bot.servers[i];
-        for (mem in server.memberMap) {
-            users[server.name + mem] = server.memberMap[mem]['roles'];
+    bot.guilds.every((guild) => {
+        if (guild.available) {
+            guild.members.every((member, index) => {
+                users[member.id + guild.id] = member.roles;
+            }) 
         }
-    }
+    })
     orm.connect(config.DBConnection, (err, db) => {
         if (err) throw err;
         dbmanage.setSchema(orm, db);
     })
 })
 
-bot.on("serverMemberUpdated", (server, newUser, oldUser) => {
+bot.on("guildMemberUpdate", (oldMember, newMember) => {
     //Whenever a user is modified, update his roles
-    users[server.name + newUser.id] = server.rolesOfUser(newUser);
+    users[newMember.id + newMember.guild.id] = newMember.roles;
 })
 
-bot.on("serverNewMember", (server, user) => {
+bot.on("guildMemberAdd", (member) => {
     //If a user is added, change his roles to the cached version
     found = false;
     for (prop in users) {
-        if ((server.name + user.id) == prop) {
-            roles = users[server.name + user.id];
-            bot.addUserToRole(user, roles, (err) => {if (err) {console.log(err);}});
+        if ((member.id + member.guild.id) == prop) {
+            member.setRoles(user[member.id + member.build.id]);
             found = true;
         }
     }
     //If we can't find the cached version, then we store their roles
     if (!found) {
-        users[server.name + user.id] = server.rolesOfUser(user)
+        users[member.id + member.guild.id] = member.roles;
     }
 })
 
-bot.loginWithToken(config.token)
+bot.login(config.token);
 
 exports.logout = () => {
-    bot.logout((err) => {
-        if (err) console.log(err);
-    })
+    bot.destroy();
 }
 
 exports.login = () => {
-    bot.loginWithToken(config.token)
+    bot = new Discord.client();
+    bot.login(config.token);
 }
