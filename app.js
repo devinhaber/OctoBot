@@ -37,7 +37,9 @@ function executeMessage(cmd) {
             playFile(member.voiceChannel, cmd.content.substring(6));
         })
     } else if (cmd.content == '!stop') {
-        bot.voiceConnections[cmd.guild.id].disconnect();
+        bot.voiceConnections.every((connection) => {
+            connection.disconnect();
+        });
     } else if (cmd.content == '!remaining') {
         // Probably won't work on windows. Whatever
         disk.check('/', (err, info) => {
@@ -58,7 +60,7 @@ function executeMessage(cmd) {
     } else if (cmd.content == '!sounds') {
         fs.readdir('./sounds', (err, files) => {
             if (err) {console.log(err)} else {
-                cmd.guild.sendMessage(cmd, files.toString(), (err, msg) => {return;});
+                cmd.channel.sendMessage(cmd, files.toString(), (err, msg) => {return;});
             }
         })
     }
@@ -93,10 +95,10 @@ bot.on("ready", () => {
             }) 
         }
     })
-    orm.connect(config.DBConnection, (err, db) => {
-        if (err) throw err;
-        dbmanage.setSchema(orm, db);
-    })
+    //orm.connect(config.DBConnection, (err, db) => {
+    //    if (err) throw err;
+    //    dbmanage.setSchema(orm, db);
+    //})
 })
 
 bot.on("guildMemberUpdate", (oldMember, newMember) => {
