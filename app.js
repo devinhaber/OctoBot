@@ -60,7 +60,7 @@ function executeMessage(cmd) {
     } else if (cmd.content == '!sounds') {
         fs.readdir('./sounds', (err, files) => {
             if (err) {console.log(err)} else {
-                cmd.channel.sendMessage(cmd, files.toString(), (err, msg) => {return;});
+                cmd.channel.sendMessage(files.toString());
             }
         })
     }
