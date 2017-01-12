@@ -1,7 +1,5 @@
 var Discord = require('discord.js');
 var config = require('./config.json');
-var orm = require('orm');
-var dbmanage = require('./dbmanage.js');
 var ytdl = require('ytdl-core');
 var fs = require('fs')
 
@@ -11,19 +9,22 @@ var disk = require('diskusage');
 
 var users = {}
 
+var currentlyplaying = false;
+
 function playFile(channel, filename) {
-    if (channel == null || filename == '') {
+    if (channel == null || filename == '' || currentlyplaying == true) {
         return;
     } else {
+        currentlyplaying = true;
         channel.join(channel).then((connection) => {
-            console.log('joining channel ' + channel.name)
+            console.log('joining channel ' + channel.name +", and playing sound " + filename)
             const path = './sounds/' + filename + '.mp3' //More file formats coming in the future!
             const options = 
             {
                 'volume': config.volume
             }
             const dispatcher = connection.playFile(path, options);
-            dispatcher.on('end', () => {connection.disconnect()});
+            dispatcher.once('end', () => {currentlyplaying = false; connection.disconnect()});
         })
     }
 }
@@ -32,11 +33,12 @@ function executeMessage(cmd) {
     if (cmd.content == '!help') {
         cmd.channel.sendMessage(config.helpMessage);
     } else if (cmd.content.substring(0,5) == "!play") {
-        console.log(cmd.author + "playing sound" + cmd.content.substring(6));
         cmd.guild.fetchMember(cmd.author).then((member) => {
             playFile(member.voiceChannel, cmd.content.substring(6));
         })
     } else if (cmd.content == '!stop') {
+        console.log("Stopping bot playback")
+        currentlyplaying = false;
         bot.voiceConnections.every((connection) => {
             connection.disconnect();
         });
@@ -49,20 +51,30 @@ function executeMessage(cmd) {
             }
         })
     } else if (cmd.content.substring(0,8) == '!youtube') {
-        cmd.guild.fetchMember(cmd.author).then((member) => {
-            member.voiceChannel.join(cmd.author.voiceChannel).then((connection) => {
-                ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3')).on('finish', () => {
-                    dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume});
-                    dispatcher.on('end', () => {connection.disconnect()});
+        var args = cmd.content.split(" ")
+        if (args.length >= 4 && args[1] == "save") {
+            console.log("Saving video at url " + args[2] + " as " + args[3])
+            ytdl(args[2], { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/' + args[3] + '.mp3'));
+            return;
+        }
+        if (args.length >= 2 && currentlyplaying == false) {
+            currentlyplaying = true;
+            cmd.guild.fetchMember(cmd.author).then((member) => {
+                member.voiceChannel.join(cmd.author.voiceChannel).then((connection) => {
+                    console.log("Playing video at url " + cmd.content.substring(9) + " in channel " + cmd.author.voiceChannel.name)
+                    ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3')).on('finish', () => {
+                        dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume});
+                        dispatcher.once('end', () => {currentlyplaying = false; connection.disconnect()});
+                    });
                 });
             });
-        });
+        } 
     } else if (cmd.content == '!sounds') {
-        fs.readdir('./sounds', (err, files) => {
-            if (err) {console.log(err)} else {
-                cmd.channel.sendMessage(files.toString());
-            }
-        })
+            fs.readdir('./sounds', (err, files) => {
+                if (err) {console.log(err)} else {
+                    cmd.channel.sendMessage(files.join(", "));
+                }
+            })
     }
 }
 

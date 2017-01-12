@@ -13,10 +13,8 @@
   },
   "homepage": "https://github.com/devinhaber/OctoBot#readme",
   "dependencies": {
-    "discord.js": "^10.0.1",
-    "node-opus": "^0.2.2",
-    "opusscript": "0.0.1",
     "body-parser": "1.15.2",
+    "discord.js": "^11.0.0",
     "diskusage": "0.1.5",
     "express": "4.14.0",
     "express-session": "^1.14.0",
@@ -24,9 +22,8 @@
     "multer": "^1.1.0",
     "mustache": "2.2.1",
     "mustache-express": "1.2.2",
-    "mysql": "2.0.0-alpha9",
-    "node-schedule": "1.1.1",
-    "orm": "3.1.0",
+    "node-opus": "^0.2.2",
+    "opusscript": "0.0.1",
     "ytdl-core": "^0.7.17"
   }
 }

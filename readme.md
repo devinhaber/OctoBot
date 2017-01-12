@@ -7,7 +7,7 @@ A quick discord bot written in node. Comes with a control panel written using ex
 Currently the bot can:
 1. Play sounds from local directory
 2. Preserve roles in a discord server
-3. (Soon) Register WoW raids and schedule them
+3. Play youtube videos, and save them
 
 # Requirements
 
@@ -27,13 +27,7 @@ The bot currently reads settings from a file called `config.json`. You should in
 "helpMessage": A message to display when someone types !help.
 "volume": Global volume setting for all sounds.
 "playingGame": The display name for the Discord "currently playing".
-"DEV": (Unused) true or false, depending whether the bot is in development mode. 
-"DBConnection": DB Url for Node ORM. See below
-"sesssionSecret": Secret key used by express-session to sign session cookies 
+"sessionSecret": Secret key used by express-session to sign session cookies 
+"username": Username for bot control panel - hardcoded in config for ease of use
+"password": Password for bot control panel - again, for small personal project, no need to secure pass
 ```
-
-# Using other databases
-
-The current requirement in package.json uses MySQL as a database. However, the `ORM` package can use many different databases. Install the correct driver based on [ORM](https://github.com/dresende/node-orm2/wiki/Connecting-to-Database). 
-
-No matter what DB you are using, set the DBConnection property in `config.json` to a valid [connection url](https://github.com/dresende/node-orm2/wiki/Connecting-to-Database)
