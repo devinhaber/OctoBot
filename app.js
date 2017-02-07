@@ -60,7 +60,7 @@ function executeMessage(cmd) {
         if (args.length >= 2 && currentlyplaying == false) {
             currentlyplaying = true;
             cmd.guild.fetchMember(cmd.author).then((member) => {
-                member.voiceChannel.join(cmd.author.voiceChannel).then((connection) => {
+                member.voiceChannel.join().then((connection) => {
                     console.log("Playing video at url " + cmd.content.substring(9) + " in channel " + cmd.author.voiceChannel.name)
                     ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3')).on('finish', () => {
                         dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume});
