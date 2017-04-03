@@ -64,7 +64,7 @@ function executeMessage(cmd) {
             currentlyplaying = true;
             cmd.guild.fetchMember(cmd.author).then((member) => {
                 member.voiceChannel.join().then((connection) => {
-                    console.log("Playing video at url " + cmd.content.substring(9) + " in channel " + cmd.author.voiceChannel.name)
+                    console.log("Playing video at url " + cmd.content.substring(9) + " in channel " + member.voiceChannel.name)
                     ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3')).on('finish', () => {
                         dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume});
                         dispatcher.once('end', () => {currentlyplaying = false; connection.disconnect()});
