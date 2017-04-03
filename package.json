@@ -24,6 +24,6 @@
     "mustache-express": "1.2.2",
     "node-opus": "^0.2.2",
     "opusscript": "0.0.1",
-    "ytdl-core": "^0.7.17"
+    "ytdl-core": "^0.7.24"
   }
 }

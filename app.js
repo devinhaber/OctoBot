@@ -9,6 +9,8 @@ var disk = require('diskusage');
 
 var users = {}
 
+var playlist = []
+
 var currentlyplaying = false;
 
 function playFile(channel, filename) {
@@ -25,6 +27,7 @@ function playFile(channel, filename) {
             }
             const dispatcher = connection.playFile(path, options);
             dispatcher.once('end', () => {currentlyplaying = false; connection.disconnect()});
+            dispatcher.once('error', (error) => {currentlyplaying = false; console.log(error)});
         })
     }
 }
@@ -116,6 +119,7 @@ bot.on("ready", () => {
 bot.on("guildMemberUpdate", (oldMember, newMember) => {
     //Whenever a user is modified, update his roles
     users[newMember.id + newMember.guild.id] = newMember.roles;
+    console.log(newMember.id + newMember.guild.id + ", " + newMember.roles);
 })
 
 bot.on("guildMemberAdd", (member) => {
@@ -123,7 +127,8 @@ bot.on("guildMemberAdd", (member) => {
     found = false;
     for (prop in users) {
         if ((member.id + member.guild.id) == prop) {
-            member.setRoles(user[member.id + member.build.id]);
+            member.setRoles(user[member.id + member.guild.id]);
+            console.log(user[member.id+member.guild.id]);
             found = true;
         }
     }
