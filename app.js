@@ -62,11 +62,15 @@ function executeMessage(cmd) {
         }
         if (args.length >= 2 && currentlyplaying == false) {
             currentlyplaying = true;
+            seek = 0;
+            if (args.length > 2) {
+                seek = parseInt(args[2]);
+            }
             cmd.guild.fetchMember(cmd.author).then((member) => {
                 member.voiceChannel.join().then((connection) => {
-                    console.log("Playing video at url " + cmd.content.substring(9) + " in channel " + member.voiceChannel.name)
-                    ytdl(cmd.content.substring(9), { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3')).on('finish', () => {
-                        dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume});
+                    console.log("Playing video at url " + args[1] + " in channel " + member.voiceChannel.name)
+                    ytdl(args[1], { filter: function(format) { return format.container === 'mp4' && !format.encoding; } }).pipe(fs.createWriteStream('./sounds/temp.mp3')).on('finish', () => {
+                        dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume, 'seek': seek});
                         dispatcher.once('end', () => {currentlyplaying = false; connection.disconnect()});
                     });
                 });
