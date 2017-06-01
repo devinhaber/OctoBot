@@ -8,6 +8,7 @@ Currently the bot can:
 1. Play sounds from local directory
 2. Preserve roles in a discord server
 3. Play youtube videos, and save them
+4. Take randomly selected images from an imgur album, and post them
 
 # Requirements
 
@@ -30,4 +31,6 @@ The bot currently reads settings from a file called `config.json`. You should in
 "sessionSecret": Secret key used by express-session to sign session cookies 
 "username": Username for bot control panel - hardcoded in config for ease of use
 "password": Password for bot control panel - again, for small personal project, no need to secure pass
+"album": The album hash to access for the !smug command
+"clientID": Your imgur API client ID
 ```
