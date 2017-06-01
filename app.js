@@ -3,6 +3,8 @@ var config = require('./config.json');
 var ytdl = require('ytdl-core');
 var fs = require('fs')
 
+const https = require('https');
+
 var bot = new Discord.Client();
 
 var disk = require('diskusage');
@@ -82,8 +84,52 @@ function executeMessage(cmd) {
                     cmd.channel.sendMessage(files.join(", "));
                 }
             })
+    } else if (cmd.content == '!smug'){
+        postSmugAnimeFace(cmd);
+        return;
     }
 }
+
+function getRequestJson(options, callback) {
+    const req = https.get(options, (res) => {
+        console.log("Album Response: " + res.statusCode);
+        data = "";
+        res.on('data', (chunk) => {
+            data = data + chunk;
+        })
+
+        res.on('end', () => {
+            callback(JSON.parse(data));
+        })
+    })
+
+    req.on('error', (e) => {
+        console.log("Request Error");
+    })
+
+    req.end();
+}
+
+function postSmugAnimeFace(cmd) {
+    const options = {
+        "host": "api.imgur.com",
+        "path": "/3/album/" + config.album,
+        "headers": {"Authorization" : "Client-ID " + config.clientID}
+    }
+
+    cmd.delete().catch(console.log);
+
+    getRequestJson(options, (response) => {
+        images = response.data.images;
+        rand = Math.floor(Math.random() * images.length);
+        url = images[rand].link;
+
+        cmd.channel.send(url).catch(console.log);
+    });
+}
+
+
+
 
 function processMessage(msg) {
     if (msg.content.substring(0,1) == '!') {
