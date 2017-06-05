@@ -30,7 +30,7 @@ function playFile(channel, filename) {
             const dispatcher = connection.playFile(path, options);
             dispatcher.once('end', () => {currentlyplaying = false; connection.disconnect()});
             dispatcher.once('error', (error) => {currentlyplaying = false; console.log(error)});
-        })
+        }).catch((error) => {console.log(error); currentlyplaying = false});
     }
 }
 
@@ -75,7 +75,7 @@ function executeMessage(cmd) {
                         dispatcher = connection.playFile('./sounds/temp.mp3', {'volume': config.volume, 'seek': seek});
                         dispatcher.once('end', () => {currentlyplaying = false; connection.disconnect()});
                     });
-                });
+                }).catch((error) => {console.log(error); currentlyplaying = false});
             });
         } 
     } else if (cmd.content == '!sounds') {
